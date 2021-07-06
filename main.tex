@@ -1,0 +1,79 @@
+\documentclass[]{spie}  %>>> use for US letter paper
+%\documentclass[a4paper]{spie}  %>>> use this instead for A4 paper
+%\documentclass[nocompress]{spie}  %>>> to avoid compression of citations
+
+\renewcommand{\baselinestretch}{1.0} % Change to 1.65 for double spacing
+ 
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Principal component analysis of the Chandra/ACIS gain}
+\author[a]{Hans Moritz G\"unther}
+\author[b]{Akos Bogdan}
+\author[b]{Nick Durham }
+\affil[a]{MIT Kavli Institute for Astrophysics and Space Research, Massachusetts Institute of Technology, Cambridge, MA 02139, USA}
+\affil[b]{Smithsonian Astrophysical Observatory, Cambridge, MA 02139, USA}
+
+\authorinfo{Send correspondence to H.M.G. (E-mail: hgunther@mit.edu)}
+
+
+% Option to view page numbers
+\pagestyle{empty} % change to \pagestyle{plain} for page numbers   
+\setcounter{page}{301} % Set start page numbering at e.g. 301
+ 
+\begin{document} 
+\maketitle
+
+\begin{abstract}
+Up to 2020, the Chandra/ACIS gain has been calibrated using the External Calibration Source (ECS). The ECS consists of a radioactive material and is placed in the ACIS housing such that all chips are fully illuminated. Since the radioactive source decays over time, count rates are becoming too low. Instead, astrophysical calibration sources will be needed, which do not fill the field of view. Here, we determine the dominant spatial components through principal component analysis (PCA). We find that, given the noise levels observed today, all ACIS gain maps can be sufficiently described by just a few (often only one) spatial components. We conclude illuminating a small area is sufficient for gain calibration. We apply this to observations of the astrophysical source Cas A. The resulting calibration is found to be accurate to 0.6\% in at least 68\% of the chip area, following the same definition for the calibration accuracy that has been used since launch.
+\end{abstract}
+
+% Include a list of keywords after the abstract 
+\keywords{Chandra, calibration, gain, principal component analysis}
+
+% Use cite and citenum
+
+\section{INTRODUCTION}
+\label{sec:intro} 
+
+In the past, the dPHA maps for each chip have been constructed by fitting a number of regions (256 regions of 32 * 128 pixels each) independently. One can see that the maps show consistent large scale structure. As the calibration source ages, fitting 256 regions independently is not be possibly any longer; instead we could try to parameterize the spatial dependence and fit just a few parameters which can be done with more noisy data.
+
+The basic idea is to use PCA (Principle Component Analysis). Each observed dPHA image can be thought of as a vector with 256 features. PCA will find new bases vectors in 256 dimensional space choosing the bases vectors (=image components) such that most of the variability between images can be described by just a few components.
+
+This document is a jupiter notebook for an analysis in Python, using common scientific packages. If you are looking at the html version, you can use the button below to toggle the display of the Python code on/off. The code is somewhat commented, but not to the level of a "production pipeline".
+
+In the analysis, it will be apprarent that the chips fall into three groups, where the BI chips behave similarly, I0 and I2 do, and the remaining FI chips form the last group. Most of the plots are thus done for just one or a few chips (e.g. I0, I1, and S3).
+
+The gain also depends strongly on temerature, but that is beyond the scope of this study, all data here is from nominal cold observations.
+
+
+In this section I read the data into arrays and run PCA on the array for each chip. Occasionally, there a few points of missing data. This happens more frequently in recent observations, because the calibration source is weaker now. For numerical stability, I smooth over those and fill them with the mean of the values of the surrounding pixels.
+
+After reading all the data and filling missing values the resulting image might look like the following (here epoch 50 for the I3 chip in the Ti line).
+
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[height=5cm]{LGML_gradient.pdf}
+  \end{center}
+  \caption
+      { \label{fig:LGML_gradient}Change of effective area for ML mirrors where the lateral grading differs from the design gradient.
+}
+\end{figure}
+
+\acknowledgments  
+Support
+for this work was provided in part through NASA grant NNX17AG43G and
+Smithsonian Astrophysical Observatory (SAO) contract SV3-73016 to MIT
+for support of the {\em Chandra} X-Ray Center (CXC), which is operated
+by SAO for and on behalf of NASA under contract NAS8-03060.
+The
+analysis uses Astropy, a community-developed core Python
+package for Astronomy\cite{astropy1,astropy2}, numpy\cite{numpy}, scikit-learn\cite{scikit-learn} and
+IPython\cite{IPython}. Displays are done with
+matplotlib\cite{matplotlib} and bokeh\cite{bokeh}.
+% References
+\bibliography{report} % bibliography data in report.bib
+\bibliographystyle{spiebib}
+
+\end{document} 
