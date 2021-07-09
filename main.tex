@@ -26,32 +26,28 @@
 \maketitle
 
 \begin{abstract}
-Up to 2020, the Chandra/ACIS gain has been calibrated using the External Calibration Source (ECS). The ECS consists of a radioactive material and is placed in the ACIS housing such that all chips are fully illuminated. Since the radioactive source decays over time, count rates are becoming too low. Instead, astrophysical calibration sources will be needed, which do not fill the field of view. Here, we determine the dominant spatial components through principal component analysis (PCA). We find that, given the noise levels observed today, all ACIS gain maps can be sufficiently described by just a few (often only one) spatial components. We conclude illuminating a small area is sufficient for gain calibration. We apply this to observations of the astrophysical source Cas A. The resulting calibration is found to be accurate to 0.6\% in at least 68\% of the chip area, following the same definition for the calibration accuracy that has been used since launch.
+Up to 2020, the Chandra/ACIS gain has been calibrated using the External Calibration Source (ECS). The ECS consists of a radioactive material and is placed in the ACIS housing such that all chips are fully illuminated. Since the radioactive source decays over time, count rates are becoming too low. Instead, astrophysical calibration sources will be needed, which do not fill the field of view. Here, we determine the dominant spatial components of the gain maps through principal component analysis (PCA). We find that, given the noise levels observed today, all ACIS gain maps can be sufficiently described by just a few (often only one) spatial components. We conclude that illuminating a small area is sufficient for gain calibration. We apply this to observations of the astrophysical source Cas A. The resulting calibration is found to be accurate to 0.6\% in at least 68\% of the chip area, following the same definition for the calibration accuracy that has been used since launch.
 \end{abstract}
 
 % Include a list of keywords after the abstract
-\keywords{Chandra, calibration, gain, principal component analysis}
+\keywords{Chandra, calibration, gain, principal component analysis, ACIS, CCD}
 
 % Use cite and citenum
 
 \section{INTRODUCTION}
 \label{sec:intro}
-X-ray astronomy has been revolutionized by the advent of CCD detectors. With CCDs, we can determine the energy of every single incoming photon and thus extract and X-ray spectrum at any position of the image. In this way, spectra of many point sources such as a young stellar cluster, or of different positions in the an extended source, e.g.\ a suerpnova remnant can be obtained in just a single pointing. However, CCDs do not directly output the photon energy. When an X-ray photon hits the CCD, it generates and electron cloud in the detector material. THe number of electrons in that cloud is related to the photon energy. However, electrons can be lost if either the cloud spreads over too many pixels or if they are trapped on defects, causing a chanrge-trasfer inefficiency (CTI) [REF HERE]. Even after the electrons are read out, the signal needs to be amplified and processed electronically, until a PHA (Pulse hieght amplitude) value for a specific event is recorded. This PHA value is roughly linearly realted to the photon energy, but the exact realtion needs to be calibrated empirically using a source of photons of known energy.
+X-ray astronomy has been revolutionized by the advent of CCD detectors. With CCDs, we can determine the energy of every single incoming photon and thus extract and X-ray spectrum at any position of the image. In this way, spectra of many point sources such as a young stellar cluster, or of different positions in an extended source, such as a supernova remnant can be obtained in a single observation. However, CCDs do not directly output the photon energy. When an X-ray photon hits the CCD, it generates an electron cloud in the detector material. The number of electrons in that cloud is related to the photon energy. However, electrons can be lost if either the cloud spreads over too many pixels or if they are trapped on defects, causing a charge-transfer inefficiency (CTI)\cite{2002NIMPA.486..751T,GrantCTI}. After the electrons are read out, the signal needs to be amplified and processed electronically, until a PHA (Pulse height amplitude) value for a specific event is recorded. This PHA value is roughly linearly related to the photon energy, but the exact relation needs to be calibrated empirically using a source of photons of known energy.
 
-In for the ACIS detector [REF] on the Chandra X-ray Observatory, this calibration has long relied on the so called ``external calibration source'' (ECS). The ECS consists of a Fe-55 source and aluminum and titanium targets, thus emitting strong Al K$\alpha$, and Ti and Mn K$\alpha$ and K$\beta$ lines in addition to a number of weaker lines. The source is mounted such that it illuminates all ACIS chips uniformly while they are stowed during radiation belt passage.
+For the ACIS detector on the Chandra X-ray Observatory, this calibration has long relied on the so called ``external calibration source'' (ECS). The ECS consists of a $^{55}$Fe source and aluminum and titanium targets, thus emitting strong Al K$\alpha$, and Ti and Mn K$\alpha$ and K$\beta$ lines in addition to a number of weaker lines. The source is mounted such that it illuminates all ACIS chips uniformly while they are stowed during radiation belt passage.
 
-In the past, the dPHA maps for each chip have been constructed by fitting a number of regions (256 regions of 32 * 128 pixels each) independently. One can see that the maps show consistent large scale structure. As the calibration source ages, fitting 256 regions independently is not be possibly any longer; instead we could try to parameterize the spatial dependence and fit just a few parameters which can be done with more noisy data.
-
-The basic idea is to use PCA (Principal Component Analysis). Each observed dPHA image can be thought of as a vector with 256 features. PCA will find new bases vectors in 256 dimensional space choosing the bases vectors (=image components) such that most of the variability between images can be described by just a few components.
-
-Code is available at ...
-
-Use term GAIN somewhere
+In the past, the gain maps for each chip have been constructed by fitting a number of regions (256 regions of 32 * 128 pixels each) independently. One can see that the maps show consistent large scale structure. As the calibration source ages and count rates decline, fitting 256 regions independently is not possible any longer. Here, we present a scheme that makes use of the spatial structure in the gain maps.
+The basic idea is to use PCA (Principal Component Analysis). Each observed gain map can be thought of as a vector with 256 features. PCA will find new bases vectors in 256 dimensional space choosing the bases vectors (=image components) such that most of the variability between images can be described by just a few components.
 
 In the analysis, it will be apprarent that the chips fall into three groups, where the BI chips behave similarly, I0 and I2 do, and the remaining FI chips form the last group. Most of the plots are thus done for just one or a few chips (e.g. I0, I1, and S3).
 
 The gain also depends strongly on temperature, but that is beyond the scope of this study, all data here is from nominal cold observations.
 
+All code for this analysis is available at \url{https://github.com/hamogu/dPHA/}.
 
 \section{CALIBRATION DATA}
 Data from the ECS has been used since Chandra's launch to calibrate the relation between PHA and photon energy. We reduce the data follwing the same established procedures. First, data is reprocessed with the standard \texttt{acis\_process\_events} procedure to correcting for CTI, but not for the gain, since this is the quantity that we want to establish. Events are split by chip and within each ship in regions of $32*128$~pixels, which gives 256 regions per chip. For each region, a spectrum is extracted and the position of the Al, Ti, and Mn K$\alpha$ lines are fit, see Figure~\ref{fig:example} for an example.
@@ -65,7 +61,7 @@ Data from the ECS has been used since Chandra's launch to calibrate the relation
 \end{figure}
 In this procedure the fits for each tile on the chip are totally independent. Yet, Figure~\ref{fig:example} shows that large scale structure exists. First, we can discern the node boundaries. In node 3 (x pixel values 513-768) the PHA value if the Ti line peak is significantly lower than in the other three nodes. Furthermore, there is a clear trend with higher PHA values towards the bottom of the figure (smaller y pixel values).
 
-Smaller regions would a allow a more fine-grained picture of the spatial dependence of the gain calibration. However, each region needs to a have a sufficient number of ECS counts to extract a spectrum and fit the position of the emission lines. If the number of counts is too low, then the fit might be unsuccessful or the statistical uncertainties of the fitted value are large. Even for the tiles chosen, this problem occurs since the count rate from the ECS declines as the Fe-55 source decays over time. Until 2015, the gain calibration was performed every three months. Since 2016, data for six month is combined to ensure a sufficient count number to sucessfully fit the line position in the spectrum. Even with this adjustment, it happens that in some regions the number of counts is too low to fit the spectrum. In these cases, we fill in the missing values from the average of the neighboring tiles. No tiles ever needed filling on the S3 chip, while 260 missing values were filled on the S0 chip.
+Smaller regions would a allow a more fine-grained picture of the spatial dependence of the gain calibration. However, each region needs to a have a sufficient number of ECS counts to extract a spectrum and fit the position of the emission lines. If the number of counts is too low, then the fit might be unsuccessful or the statistical uncertainties of the fitted value are large. Even for the tiles chosen, this problem occurs since the count rate from the ECS declines as the $^{55}$Fe source decays over time. Until 2015, the gain calibration was performed every three months. Since 2016, data for six month is combined to ensure a sufficient count number to sucessfully fit the line position in the spectrum. Even with this adjustment, it happens that in some regions the number of counts is too low to fit the spectrum. In these cases, we fill in the missing values from the average of the neighboring tiles. No tiles ever needed filling on the S3 chip, while 260 missing values were filled on the S0 chip.
 
 \section{PRINCIPAL COMPONENT ANALYSIS}
 Principal Component analysis (PCA) is a well known mathematical concept and a description can be found elsewhere. We are using the implementation from scikit-learn\cite{scikit-learn}. In short, we can look at the 256 regions in each image as a vector in 256-d space. PCA finds a new set of basis vectors and orders them such that the first vector in the list describes the direction with the largest variance between the input data points, the second vector the direction with the second most variance and so on. The new basis vectors always form an orthogonal basis (i.e.\ the PCA components are independent) and the process of calculating them is determinisitic. (There are alternative implementations of PCA that make use of approximations to speed up the computation, but that is not a concern for the size of this dataset.) However, the new basis may not be complete. If only 215 datapoints are put into the PCA, the new basis will only have 215 vectors and thus not span the entire 256 dimensional space. PCA can be used as a tool for dimensionality reduction and noise reduction. A simple example is a set of datapoints in 3D space that all fall onto a single plane with just some noise above and below the plane. In that case, the PCA will return two vectors that span up the plane and one that's perpendicular to it. The importance of this last component will be small. We can then decide to discard this component and only retain the remaining two, effectively forcing all points on the plane, which reduces the noise in one direction. At the end, those new noise-reduced points can be projected back into the original 3D space.
@@ -80,7 +76,7 @@ For each chip, we run one PCA on data from all epochs and all three lines (Al, T
 
 \begin{figure} [ht]
   \begin{center}
-    \includegraphics[height=5cm]{figures/components.pdf}
+    \includegraphics[width=\textwidth]{figures/components.pdf}
   \end{center}
   \caption
       {Most important PCA components (left to right) for different chips (rows). Some similarities are seen between chips. \label{fig:components}}
@@ -95,19 +91,170 @@ For comparison, Figure~\ref{fig:components_minor} shows some components of lesse
 
 \begin{figure} [ht]
   \begin{center}
-    \includegraphics[height=5cm]{figures/components_minor.pdf}
+    \includegraphics[width=\textwidth]{figures/components_minor.pdf}
   \end{center}
   \caption
-      {Most important PCA components (left to right) for different chips (rows). Some similarities are seen between chips. \label{fig:components_minor}}
+      {The figure shows a few PCA components that explain less of the variance than thos ecomponents shown in Figure~\ref{fig:components}. A few different components are shown left to right for different chips (rows). \label{fig:components_minor}}
 \end{figure}
 
 \subsection{Explained variance and time evolution of scaling factors}
-Slide Type
 
-The PCA orders components by importance, such that the first component explained the most of the data variance. Thus, one of the first things to look at is how many components are needed to describe, e.g.\ 95\% of the observed variance. Given that the observations do contain noise, we are not looking for a perfect description of the input data by PCA components. Instead, we need to determine which components are physical and which just fit the noise.
+The PCA orders components by importance, such that the first component explained the most of the data variance.  Figure~\ref{fig:explvar} (a) shows the explained variance for the I0 chip.
+This is done four times: Once for Al, Ti, and Mn each (i.e.\ with 75 input epochs) and once using all the data for one chip at the same time ($3*75=225$ input vectors). The more information is available, the better the PCA components will be. Since the gain maps for Al, Ti, and Mn are clearly similar, it makes sense to describe them with the same spatial components. As an example, for the I0 chip, 95\% of the variance in the Mn data can be explained with just one spatial component. The more components are used, the more of the variance will be explained. However, given that the input data contains noise, there is no need to explain everything, we would just be fitting the noise. Instead, we are looking for the most important components only. In all chips, Al needs more components, but (not shown here directly) it is also the most noisy data. Note that for panel (a) in the plot only, we perform PCA not the raw PHA values, but subtract the epoch 0 fits. For the PCA of the full PHA values, the largest difference between the data of Al, Ti, and, Mn is that these lines are taken at different energies. A first component of the PCA takes care of this linear dependence and thus explains $>0.9999$ of the variance. However, we need to decide how many component to look at beyond the simple proportionality with energy and thus it is more instructive to look at a PCA of the dPHA values with most of the energy dependenace taken out.
 
-Also, we want to look at the time dependence of the scaling factors for the most important components.
+The right column in Figure~\ref{fig:explvar} (panels b and d) shows the scaling factor for the first few PCA components over time. Different colors are for different compoments, different line styles for Al, Ti, and Mn. For example, the Ti image of a particular epoch can be written as scaling of component 1 multiplied by the spatial component 1, plus the scaling of component 2 multiplied by component 2 and so on.
 
+The first (the strongest) component is much more important than the next few, so this is the same plot without the first component. The scaling of the the PCA components for Al, Ti, and Mn behaves very similarly. This is explored in more detail below. These plots also give a first hint which components are physical and which start to describe the noise. Components that describe physcial processes on the chip should have trends in time, because the values are correlated from one epoch to the next. On the other hand, components that just describe the noise pattern fluctuate around 0 and start to fluctuate more at later times when the noise in the data increases, e.g.\ components 6 or 7 for the I0 chip.
+
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[height=10cm]{figures/PCA_details_i0.pdf}
+  \end{center}
+  \caption
+      {PCA results for the I0 chip. \emph{(a):} Explained variance ratio (see text for details). Lines are shown for a PCA that is run for each spectral line independently or all three lines combined. In the combined case, just three PCA components are sufficient to explain 97\% of the observed variance. \emph{(b):} Scling factor of PCA components. The first component is shown in black/grey with different line styles for different elements. Other component are shown in color, but coefficients are close to 0, so the cannot be seen individually in this plot. \emph{(c):} Average uncertainty in PHA channels of the fit of the line centroid. The radioactive decay of the $^{55}$Fe source leads to reduced signal over time and increasing uncertainties. Starting in 2015 (gray area), periods of size month instead of 3 months are used. \emph{(d):} Same as (b), but zoomed in to see the less important PCA components.
+      \label{fig:explvar}}
+\end{figure}
+
+\subsection{Comparing chips}
+Figure\ref{fig:comparechips} shows that chips fall into essentially three groups: For back-illuminated CCDs, the scale factor of the strongest component changes essentially linear with time (with a small offset in the first two years, see panel c). The front-illuminated chips showstwo different behaviours: While I2 developed an offset from I0 in the beginning, both chips have been developing in parallel since about 2003 (panel a). The remaining chips (I1, I3, S0, S2, S4, S5), from another group with very similar time evolution (panel b). In all cases, the scale factor moves up quickly between 2000 and 2003, when a sudden jump down occurs that bring some of the chips back down to 0. After that, this group develops largely in parallel, with the same offset. Only in recent years (after 2015 or so) do the scale factors diverge more.
+
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{figures/comparechips.pdf}
+  \end{center}
+  \caption
+      {Scale factor for the strongest component in the PCA for Ti. Chips are empirically sorted in groups with different temporal behaviour.
+      \label{fig:comparechips}}
+\end{figure}
+
+
+\section{WHICH PCA COMPONENTS ARE SIGNIFICANT?}
+
+Figure~\ref{fig:explvar} shows that the noise increases significantly over time (panel c). Panel d displays which PCA components contribute to the image over time. In all cases, the first few components are important, and they are important over the full time range, and there is significant coherent structure. In contrast, the higher components (e.g.\ 6, 7, 8 for I0) only turn up with a significant contribution in the last year or so and fluctuate widely. That indicates that these components are mostly fitting the noise. In the following we give three different lines of reasoning that only the first four or five PCA components matter.
+
+
+\subsection{Time dependance of scaling factors}
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[height=5cm]{figures/autocorr.pdf}
+  \end{center}
+  \caption
+      {Plot of the autocorrelation functions for the first 15 components in Ti for chip I0. Components 8-15 are all plotted in different shades of gray.
+        \label{fig:time}}
+\end{figure}
+
+Figure~\ref{fig:time} plots the autocorrelation function for the time dependence for each component. Random noise is random in time and thus consecutive measurements are unrelated and the autocorrelation will drop close to 0 for time step 2. On the other hand, physical changes in the the chip or the read-out do not appear one day and return to a previous state the next, so we expect that the scaling factors for PCA components that are physcially relevant are correlated between different epochs.
+In the figure, components 1-5 are different from random noise. Note that there are later components that have a long-time scale autocorrelation (e.g.\ one of the dark grey ones). These components likely also describe physical properties of the CCD, but they are less important than some of the noise-only components (components are sorted by the order of importance by the PCA) and, as we show in the next section are not consistent between different energies.
+
+\subsection{Correlation between Al, Ti, and Mn lines}
+
+Similarly, we can correlate the curves for Al, Ti, and Mn. Random noise is uncorrelated, while physical components should affect the gain in each line (Figure~\ref{fig:encorr}).
+
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[height=5cm]{figures/encorr.pdf}
+  \end{center}
+  \caption
+      {Correlation between the Al, Ti, and Mn corefficients for chip I0.
+        \label{fig:encorr}}
+\end{figure}
+
+For each PCA component, we have three time series of scaling factors, one from the Al, Ti, and Mn lines each. While the gain values do have some energy dependence, physical changes in the chips should be seen in all three lines in some way and thus the three time series should be correlated. On the other hand, pure noise will be uncorrelated. The plots above show the correlation coefficients between the time series for Al, Ti, and Mn. The first three or four components show strong correlations and after that the coefficients are compatible with random noise, compatible with the analysis above.
+
+\subsection{$\chi^2$ test}
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[height=5cm]{figures/chi2.pdf}
+  \end{center}
+  \caption
+      {Reduced $chi^2$ when describing the Ti line on the I0 chip with a different nubmer of PCA components.
+        \label{fig:chi2}}
+\end{figure}
+
+Figure~\ref{fig:chi2} shows the reduced $\chi^2$ that a description with the first $n$ components of the PCA. In general, the $\chi^2$ drops with time for any chosen $n$. We already showed above that the measurement uncertainty increases with time, as the intensity of the calibration source decreases. In itself, that is not surprising. While the shapes of the curves are similar, the scale differs. For most chips, several dozen components are necessary to reach  $\chi^2$ around one for early times, in other words, each region on the detector actually evolves different. However, with decreasing signal, less and less of that can the measured reliably, and at later times, after 2015 or so, good fits can often be obtained with just one or two spatial components. In several chips, there is a noticable uptick in $\chi^2$ in 2019. This is possibly related to the count number becoming so low that a Gaussian error appoximation is not appropriate any longer. Plots for Al and Mn are not shown here, but look similar.
+
+This analysis indicates that from 2010 on all chips can be described by just four or five compoments, which is compatible with the analysis in the last two figures. However, at early times more components are needed to reach an acceptable $\chi^2$ value. That is somewhat surprising. If really more than five components are needed for the first 10 years (half the number of observations so far), one would expect that to show up in the autocorrelation of the correlation coefficients. Alternatively, the error which goes into the $\chi^2$ calculation could be underestimated.
+
+\section{DISCUSSION OF PCA ANALYSIS}
+While the gain maps in the beginning of the mission contain a lot of information about small scale changes, in the last few years, the noise has grown to the point where a satisfactory $\chi^2$ can be obtained by describing the  maps with just one (or a few) components. That means that the dPHAcalibration products produced from fitting the observations in each region independently carry more noise than justified. Instead, it is preferrable to fit the maps from about 2015 on as a linear combination of just one or a few components. That way, we have only 1 (or a few) free parameters, which can be determined much better than 256 independent regions.
+
+For future calibrations, we can just fit one (or a few) parameters and construct the maps as a linear combination of the known most important (or the few most important) spatial components. Consequently, there is no need to illuminate the entire detector. Instead, we can place an astrophysical calibration source such as Cas A so that it illuminates only a few regions. If we use only one spatial component, any region on the detector will do. If we decided to use three or four spatial components, the source should be placed such that that fit as a good handle on the parameters, i.e.\ area where the spatial shape of the top few components is very similar should be avoided and area where the chosen components have large, and most importantly, different spatial gradients are ideal.
+
+In particular the back-illuminated chips are very well described with just one spatial component, which moreover is scaled almost linearly with time. The front-illuminated chips fall in two groups (I0/I2 are one group and the remaining chips the other) with similar temperal behaviour. Observations of one chip per group could be used to predict the behaviour of the others over short time periods. However, the correlation is not perfect and all chips need calibrated individually maybe every two years or so.
+
+\subsection{Does this method introduce new systematics?}
+The PCA is fundamentally only a different way of looking at the same measurements. It still starts with fitting the peak position of the emission lines observed. Using the ECS as a data source, each of those fits still has the same systematics it had before. For example, if the position of the Ti line was unreliable because of unresolved line blends, and this introduced a systematic offset in the position of the Ti line peak, then the same systematic offset will also be part of the new basis vectors determined though PCA. So, the PCA does not remove those systematics, but there is also no reason to believe that it introduces new ones.
+
+\subsection{How does solar activity impact the PCA?}
+ACIS has survived two full solar cycles already. As such, components in the gain maps that only appear during solar maximum are part of the input data to the PCA. If these components are important to explain the variance of all PHA maps taken, then they will be part of the top few PCA components with a coefficient that is large during a solar maximum and small during a solar minimum. Thus, when the next solar maxium comes up, the fits for these components will simply return a larger coefficient than they currently do.
+
+\subsection{Testing if new PCA components are required}
+ACIS experienced some sudden changes in the past and these are reflected by sudden jumps in the coefficients of each PCA component as seen in Figure~\ref{fig:explvar}, panel (d) around 2004 and 2006. The coefficients for component 3 and 5 suddenly drop close to 0 at this point, but they then the same components rise in importance again in later years indicating that even in the event of sudden changes the same physical mechanisms are still responsible for gain changes. Of course, past performance over 20 years is no guarantee for future behaviour, but at least a good indication for the typical development. We do not have to rely on this though: We can calculate the $\chi^2$ value for any new measurement of the gain and can use that to decide if the fit is satisfactory or if additional calibration observations that truely sample the entire chip with high S/N are required.
+
+\section{CAS A AS CALIBRATION SOURCE}
+While PCA can be used to de-noise the gain maps obtained from ECS measurements (because we need to determine only a few parameters instead of 256 independent measurements), the rapid decline of the ECS count rates as the $^{55}$Fe source decays makes is necessary to swtich to using astrophysical calibration sources. Two problems with this approach are that astrophysical sources do not fill the entire field-of-view in Chandra with sufficient signal and that astrophysical sources do not provide constant emission lines at fixed energies. PCA can help with the first problem, because it allows us to reconstruct the gain map for the entire detector from measurements for only a few tiles. The second problem requires a careful choice of the calibration source and knowledge of its astrophysical properties. For example, for the bright supernova remnant Cas A, different emission regions display different ionization balances and kinematic motions, shifting the apparent line center\cite{2010ApJ...725.2038D,2012ApJ...746..130H}. Correction for this effect are outside of the scope of the current proceeding.
+
+We now present an intial attempt (without corrections for astrophysical motion) of using Cas~A as a calibration source.
+This is based on nine observations (ObsIDs 23257, 23258, 23259, 23260, 23261, 23262, 23263, 23264, 23265) of 2~ks exposure time each with Chandra. All none observations were carried out on 2020-07-14 using the ACIS-I3 chip in standard FAINT mode and Cas~A was placed on different parts of the chip, since the source is too small to sample the entire field-of-view in a single observation. We combine data from all nine obsrvations to obtain a ``baseline'' gain map. We then pick a single ObsID and treat this as our calibration observation. We fit data from just that one ObsID, fit a few PCA components to it, and evaluate the PCA components over the entire chip to build up a predicted gain map. We compare that map to the ``baseline'' to assess the accuracy of this procedure.
+
+\subsection{Measuring the channel where emission lines peak}
+An X-ray spectrum of Cas A with the most important lines labeled can be found in \citenum{1994PASJ...46L.151H}; the spectral plot is not reproduced here. The spectral resolution in ACIS is just a little lower, so looking at this CCD-resolution picture gives us an indication where we can fit just a single line and where we have to take line blends into account. We select a few bright lines that seem to be free from major contamination: Fe at 6.7~keT, Ca at 3.9~keV, Ar at 3.1~keV, S at 2.4~keV and Si at 1.9~keV. Except for Fe, the emission comes from He-like ions and is made up of the unresolved He-triplet emission. However, weaker, unresolved lines exist over the entire range of the spectrum. We fit these lines with a very simple model, just a single Gauss for the line, plus a pseudo-continuum powerlaw. First, we perform the fit on the full data integrated over the entire chip to select the position and width of the Gaussian as well has the slope of the power-law. Then, we fix the width of the Gaussian and use the position of the Gaussian and the slope of the powerlaw as starting values for the fits that we do on individual tiles. Having few parameters and starting the fit very close to the best-fit position speeds up the fitting process and reduces the risk that the fit runs into local minima.
+
+
+\subsection{$\chi^2$ test}
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{figures/CasAlines.pdf}
+  \end{center}
+  \caption
+      {\emph{(a-e):} Peak PHA channel for emission lines form different elements in Chandra observations of Cas A (ObsID 23261) \emph{(f):} Total number of countsdetected photons in each spatial bin (tile) on the detector. Fits for each lines are done using only photons with an energy close to the expected line center, but this panel gives a good impression which regions of the detector are exposed well.
+        \label{fig:CasAlines}}
+\end{figure}
+
+Figure~\ref{fig:CasAlines} shows the fitted peak position of selected lines for ObsID 23261. Regions with insufficient counts for a fit are left white in the image. The signal in Si is best. Regions with $<50$~counts in the the fitted region are too noisy to be useful, so those are skipped.
+In general, we can see the same spatial pattern that emerges from the ECS data, where some regions are clearly more noisy than others simply because there are fewer counts.
+
+\subsection{$\chi^2$ test}
+
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{figures/Si_23261.pdf}
+  \end{center}
+  \caption
+      {\emph{(a):} Peak position of Si line for ObsID 23261 \emph{(b):} Uncertainty on peak position for ObsID 23261 \emph{(c):} predicted peak position from a fit of the top four PCA components \emph{(d):} Peak position of Si line for all nine ObsIDS combined. \emph{(e):} Ratio of predicted (from the PCA fitted to just one ObsID) and the best-known peak position of the Si line \emph{(f):} Like (e), but now devided by the statistical error on the best-known position in each tile.        \label{fig:Si23261}}
+\end{figure}
+
+Figure~\ref{fig:Si23261} shows in some detail how we can fit the Cas A data with the top few PCA components. In order to evaluate the validity of the method, we need to compare the prediced the gain in each tile with the true gain for the Si line energy. Unfortunately, we do not have a perfect measure of this quantity. The ECS data is noisy and also does not cover the exact energy of the Si line. Thus, we merge the event lists from all nine observations and treat this much larger set that the baseline. Some caution is warrented: In Cas A kinematic motions are large enough disturb the measurement (plasma moves up to 1\% of the speed of light, shifting the peak of the line position by up to 1\%) and even in the coadded data, the S/N is no ideal close to the chip edges, simply because those edges are not illuminated very well given the coordinates chosen for the observations.
+
+However, in general, we can see broad agreement between the maps of the peak positions predicted from just a single ObsID and the map measured from a combination of all nine ObsIDs. Systematic differences are seen on the left edge of the chip (red colums in panel e) and in the top row (blue in panel e). Both are regions that are not covered in ObsID 23261. We know from the PCA components however, that some components parameterize a dependence of the gain from the top to the bottom, presumably caused by CTI. Since ObsID 23261 covers mostly the middle of the chip, those components cannot be well constrainted in the fit. Figure~\ref{fig:Si23261} displays fits for the Si line.
+
+The singal of Cas A becomes weaker at higher energies and consequently the noise is much larger to Ar or Ca than for Si. There is still enough data for fit four PCA components to it, but the comparison to the increasingly noisy data from the nine combined observations becomes less meaningfull. In particular in this case, one can see how the use of PCA as a noise reduction tool is useful.
+
+\subsection{How should calibration observations be set up?}
+Going forward, we can be more deliberate in where exactly we place Cas A on the detector. As we saw above, this matters as regions not sampled may not be fit well. For example, the node-to-node differences cannot be accurately predicted unless there is at least some data on each node.
+
+To quantify this a little better, we repeat the analysis in Figure~\ref{fig:Si23261} for other ObsIDs, where Cas A was located at a different position on the detector or for combinations of ObsIDs. We do not reproduce Figure~\ref{fig:Si23261} for all other ObsIDs in this proceeding, but instead, we just show a histrogram of the absolute values from panel (e). This captures the important information on how well the gain map constructed form just one ObsID compares to the map that we adopted a baseline for this analysis (a purely obsrved map, with no appliction of PCA, using all nine ObsIDs). In Figure~\ref{fig:final} we show these distributions for all nine ObsIDs (solid line) and for some combination of two ObsIDs (dotted lines). In all cases, some tiles match better than others, but a large fraction of tiles (between 60\% and 80\%) matches within 1\%. The gray box indicates the way in which Chandra calibration has measured performance of the algorithm in the past: At least 68\% of the tiles should have the gain matched within 0.3\%.
+
+\begin{figure} [ht]
+  \begin{center}
+    \includegraphics[height=5cm]{figures/final.pdf}
+  \end{center}
+  \caption
+      {Cumulative histrogram of the ratio between the gain map, predicted using just one or two ObsIDs and PCA and the full gain map from all nine observations. Solid lines are from a single ObsID, dotted lines fomr combining two ObsIDs.
+        \label{fig:final}}
+\end{figure}
+
+The most important result from this excercise is that we can reach an accuary of about 0.6\% for 68\% of the tiles. To do so, we need to select a placement of Cas A roughly in the middle of the chip, such that all nodes are covered, or combine several observations, such that the combined observation covers all nodes.
+
+There are a few consistant patterns. In particular, all models overpredicts the left edge of the chip. This is true even when the prediction is made from the combined data of all observations. We repeated these fits using a much larger number of PCA components and still observe this effect. A possible explantion is that the chip has evolved recently in a way not seen in the ECS data and that this spatial component is therefore not represented in the PCA components. However, ECS data taken both before and after does not show the deep dip on the left side of the chip in the Al line, which is close in energy to the Si line shown here. In the ECS data, the gains drops off on the left chip edge, but consistent with the slight drop seen in the predictions (from about 470 in the middle of the first node to 460 on the edge of the chip), while the data shows a drop from 470 to 450. This feature drives the high end of the cumulative differences.
+
+We suspect that this is an astrophysical effect, i.e.\ that the Si line in this region is systematically shifted due to kinematic motion of the gas. Further work is required to quantify and remove this effect. In the middle of the chip, all nine observations contribute counts which come from different regions of Cas A. The some of that will average out the most extreme velocities. However, on the chip edges only one or two observations contribute. If these observations place a part of remnant with high line-of-sight velocity in this region, then the measured peak will be shifted. In other words, it is possible that the model is right, but the data is wrong.
+
+\subsection{How good is the calibration?}
+None of the curves in Figure~\ref{fig:final} seems to match the Chandra requirement (gray box). However, several caveats have to be kept in mind: The input data is not yet corrected for astrophysical kinematics (that is ongoing work), which may remove some systematics. Also, we use fits from all nine observations as the ``baseline''. In some parts of the chip, even the combined data is noisy. Thus even if the PCA would predict the gain map perfectly, we would still see deviations, simply because of the noise in the baseline. We also note, that the Chandra goal of ``68\% of the tiles match better than 0.3\%'' technically allows for arbitrarily large deviations on 32\% of the tiles. That could be catastrophic for the science user of the object in question is located on one o those tiles! In practice, the calibration team will have this in mind when selecting the calibration strategy.
+
+\section{SUMMARY AND CONCLUSION}
+We present a PCA analysis of archival Chandra calibration gain maps. We find that, especially in recent years with the calibration source decaying, the gain maps for all chips can be described by just a few spatial components. This allows us to predict the gain maps for the full chip, even if only some tiles on the chip have sufficient calibration data. This procedure allows us to extend the useful life of the ECS, because lower count rates can still be used for calibration, and it enables us to make use of astrophysical calibration sources that do not fill the field-of-view. We present observations of Cas~A, a likely future calibration source. We investigate its properties and find that there are likely astrophysical effects that need to be corrected to improve the accuracy of the calibration (work in progress). With just the procedures presented here, we can perform a calibration that brings 68\% of the tiles within 0.6\% of our adopbed baseline gain value (see discussion above on the assumption going into that baseline). While this is below the pre-launch accuracy requirements, it is much better than not having a gain calibration at all at the end of the useful live of the ECS and requires only a modest (2~ks per chip) amound of observing time.
 
 \acknowledgments
 Support
